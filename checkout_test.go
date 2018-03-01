@@ -1,6 +1,8 @@
 package main
 
-import "testing"
+import (
+	"testing"
+)
 
 func TestCheckout(t *testing.T) {
 	c := Checkout{}

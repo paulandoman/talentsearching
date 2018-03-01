@@ -28,7 +28,7 @@ type Checkout struct {
 }
 
 // Add does something
-func (check Checkout) Add(i Item) {
+func (check *Checkout) Add(i Item) {
 	switch i.id {
 	case classic:
 		check.classicAds++
