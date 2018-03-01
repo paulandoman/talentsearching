@@ -19,6 +19,15 @@ func TestCheckout(t *testing.T) {
 		t.Errorf("Default ad total was incorrect, got: %v, expected: 987.97", total)
 	}
 	// Unilever Test
+	unileverCheckout := Checkout{pricingRules: unilever}
+	unileverCheckout.Add(classicItem)
+	unileverCheckout.Add(classicItem)
+	unileverCheckout.Add(classicItem)
+	unileverCheckout.Add(premiumItem)
+	total = unileverCheckout.Total()
+	if total != 934.97 {
+		t.Errorf("Default ad total was incorrect, got: %v, expected: 934.97", total)
+	}
 
 	// Apple Test
 

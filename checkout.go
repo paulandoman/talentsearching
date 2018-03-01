@@ -8,7 +8,7 @@ func main() {
 
 }
 
-// JobAd does something
+// JobAd represent different types of job ads
 type JobAd int
 
 const (
@@ -17,35 +17,36 @@ const (
 	premium
 )
 
-// PricingRules does something
+// PricingRules represents different customer pricing rules
 type PricingRules int
 
 const (
-	unilever PricingRules = iota
+	standard PricingRules = iota
+	unilever
 	apple
 	nike
 	ford
 )
 
-// Item does something
+// Item represents a job ad
 type Item struct {
 	id    JobAd
-	price float32
+	price float64
 }
 
-// Checkout does something
+// Checkout represents an individual checkout
 type Checkout struct {
 	pricingRules PricingRules
-	classicAds   float32
-	standoutAds  float32
-	premiumAds   float32
+	classicAds   float64
+	standoutAds  float64
+	premiumAds   float64
 }
 
-// Add does something
+// Add ads to the checkout
 func (check *Checkout) Add(i Item) {
 	switch i.id {
 	case classic:
-		fmt.Println("classic added")
+		fmt.Println(check.pricingRules, "classic added")
 		check.classicAds++
 	case standout:
 		fmt.Println("standout added")
@@ -59,9 +60,20 @@ func (check *Checkout) Add(i Item) {
 }
 
 // Total adds up the total cost of the ads based on the customer
-func (check *Checkout) Total() float32 {
-	classicAdCost := check.classicAds * 269.99
-	standoutAdCost := check.standoutAds * 322.99
-	premiumAdCost := check.premiumAds * 394.99
-	return classicAdCost + standoutAdCost + premiumAdCost
+func (check *Checkout) Total() float64 {
+	classicAdCost := 0.0
+	standoutAdCost := 0.0
+	premiumAdCost := 0.0
+
+	switch check.pricingRules {
+	case unilever:
+		classicAdCost = (check.classicAds - check.classicAds/3) * 269.99
+		standoutAdCost = check.standoutAds * 322.99
+		premiumAdCost = check.premiumAds * 394.99
+	default:
+		classicAdCost = check.classicAds * 269.99
+		standoutAdCost = check.standoutAds * 322.99
+		premiumAdCost = check.premiumAds * 394.99
+	}
+	return Truncate(classicAdCost + standoutAdCost + premiumAdCost)
 }
