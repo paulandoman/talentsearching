@@ -42,7 +42,7 @@ type Checkout struct {
 }
 
 // Add does something
-func (check Checkout) Add(i Item) {
+func (check *Checkout) Add(i Item) {
 	switch i.id {
 	case classic:
 		fmt.Println("classic added")
@@ -59,11 +59,7 @@ func (check Checkout) Add(i Item) {
 }
 
 // Total adds up the total cost of the ads based on the customer
-func (check Checkout) Total() float32 {
-	fmt.Println(check.classicAds)
-	fmt.Println(check.standoutAds)
-	fmt.Println(check.premiumAds)
-
+func (check *Checkout) Total() float32 {
 	classicAdCost := check.classicAds * 269.99
 	standoutAdCost := check.standoutAds * 322.99
 	premiumAdCost := check.premiumAds * 394.99
