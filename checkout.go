@@ -17,29 +17,32 @@ const (
 	premium
 )
 
-// PricingRules represents different customer pricing rules
-type PricingRules int
-
-const (
-	standard PricingRules = iota
-	unilever
-	apple
-	nike
-	ford
-)
-
 // Item represents a job ad
 type Item struct {
-	id    JobAd
-	price float64
+	id JobAd
 }
 
 // Checkout represents an individual checkout
 type Checkout struct {
 	pricingRules PricingRules
-	classicAds   float64
-	standoutAds  float64
-	premiumAds   float64
+	classTotal   float64
+	standTotal   float64
+	premTotal    float64
+}
+
+// PricingRules model for the different types of ad
+type PricingRules struct {
+	classic  Pricing
+	standout Pricing
+	premium  Pricing
+}
+
+// Pricing model for each particular ad
+type Pricing struct {
+	Price     float64
+	XforY     float64 // Where Y = X-1
+	BulkNo    int
+	BulkPrice float64
 }
 
 // Add ads to the checkout
@@ -47,13 +50,13 @@ func (check *Checkout) Add(i Item) {
 	switch i.id {
 	case classic:
 		fmt.Println(check.pricingRules, "classic added")
-		check.classicAds++
+		check.classTotal++
 	case standout:
 		fmt.Println("standout added")
-		check.standoutAds++
+		check.standTotal++
 	case premium:
 		fmt.Println("premium added")
-		check.premiumAds++
+		check.premTotal++
 	default:
 		fmt.Println("nothing added")
 	}
@@ -61,19 +64,21 @@ func (check *Checkout) Add(i Item) {
 
 // Total adds up the total cost of the ads based on the customer
 func (check *Checkout) Total() float64 {
-	classicAdCost := 0.0
-	standoutAdCost := 0.0
-	premiumAdCost := 0.0
+	classicDiscount := ApplyBulkDiscount(check.classTotal, check.pricingRules.classic.XforY)
+	classicAdCost := (check.classTotal - classicDiscount) * check.pricingRules.classic.Price
 
-	switch check.pricingRules {
-	case unilever:
-		classicAdCost = (check.classicAds - check.classicAds/3) * 269.99
-		standoutAdCost = check.standoutAds * 322.99
-		premiumAdCost = check.premiumAds * 394.99
-	default:
-		classicAdCost = check.classicAds * 269.99
-		standoutAdCost = check.standoutAds * 322.99
-		premiumAdCost = check.premiumAds * 394.99
-	}
+	standoutDiscount := ApplyBulkDiscount(check.standTotal, check.pricingRules.standout.XforY)
+	standoutAdCost := (check.standTotal - standoutDiscount) * check.pricingRules.standout.Price
+
+	premiumDiscount := ApplyBulkDiscount(check.standTotal, check.pricingRules.premium.XforY)
+	premiumAdCost := (check.premTotal - premiumDiscount) * check.pricingRules.premium.Price
 	return Truncate(classicAdCost + standoutAdCost + premiumAdCost)
+}
+
+// ApplyBulkDiscount to an ad that has a X for the price of Y discount
+func ApplyBulkDiscount(noOfAds float64, xForY float64) float64 {
+	if xForY != 0 {
+		return noOfAds / xForY
+	}
+	return xForY
 }
