@@ -10,29 +10,40 @@ func TestAdd(t *testing.T) {
 	premiumItem := Item{id: premium}
 
 	// Add 2 classic, 3 standout and 1 premium ad
-	defaultCheckout := Checkout{
+	checkout := Checkout{
 		pricingRules: CustomerPriceRules["default"],
 	}
-	defaultCheckout.Add(classicItem)
-	defaultCheckout.Add(classicItem)
-	defaultCheckout.Add(standoutItem)
-	defaultCheckout.Add(standoutItem)
-	defaultCheckout.Add(standoutItem)
-	defaultCheckout.Add(premiumItem)
+	checkout.Add(classicItem)
+	checkout.Add(classicItem)
+	checkout.Add(standoutItem)
+	checkout.Add(standoutItem)
+	checkout.Add(standoutItem)
+	checkout.Add(premiumItem)
 
-	total := defaultCheckout.classTotal
+	total := checkout.classTotal
 	if total != 2 {
 		t.Errorf("Number of classic ads added was incorrect, got: %v, expected: 2", total)
 	}
 
-	total = defaultCheckout.standTotal
+	total = checkout.standTotal
 	if total != 3 {
 		t.Errorf("Number of standout ads added was incorrect, got: %v, expected: 3", total)
 	}
 
-	total = defaultCheckout.premTotal
+	total = checkout.premTotal
 	if total != 1 {
 		t.Errorf("Number of premium ads added was incorrect, got: %v, expected: 1", total)
+	}
+
+	// Adding multiple ads at once
+	unileverCheckout := Checkout{
+		pricingRules: CustomerPriceRules["unilever"],
+	}
+
+	unileverCheckout.Add(classicItem, classicItem, premiumItem, standoutItem)
+	total = unileverCheckout.classTotal
+	if total != 2 {
+		t.Errorf("Multiple classic ads added in total was incorrect, got: %v, expected: 2", total)
 	}
 
 }
@@ -41,32 +52,50 @@ func TestRemove(t *testing.T) {
 	classicItem := Item{id: classic}
 
 	// Add 2 classic ads remove 1 classic ad
-	defaultCheckout := Checkout{
+	checkout := Checkout{
 		pricingRules: CustomerPriceRules["default"],
 	}
-	defaultCheckout.Add(classicItem)
-	defaultCheckout.Add(classicItem)
-	defaultCheckout.Remove(classicItem)
+	checkout.Add(classicItem)
+	checkout.Add(classicItem)
+	checkout.Remove(classicItem)
 
-	total := defaultCheckout.classTotal
+	total := checkout.classTotal
 	if total != 1 {
 		t.Errorf("Number of classic ads added and removed was incorrect, got: %v, expected: 1", total)
 	}
 
 	// Added and subtracted the same number of classic ads
-	defaultCheckout.Remove(classicItem)
+	checkout.Remove(classicItem)
 
-	total = defaultCheckout.classTotal
+	total = checkout.classTotal
 	if total != 0 {
 		t.Errorf("Number of classic ads added and removed was incorrect, got: %v, expected: 0", total)
 	}
 
 	// Try and remove a classic ad when there are none left to remove
-	defaultCheckout.Remove(classicItem)
+	checkout.Remove(classicItem)
 
-	total = defaultCheckout.classTotal
+	total = checkout.classTotal
 	if total != 0 {
 		t.Errorf("When removing ad that doesn't exist from the checkout total ads of that type should stay zero, got: %v, expected: 0", total)
+	}
+
+	// Add multiple classic ads and then remove multiple classic ads
+	anotherCheckout := Checkout{
+		pricingRules: CustomerPriceRules["default"],
+	}
+	anotherCheckout.Add(classicItem, classicItem, classicItem)
+	anotherCheckout.Remove(classicItem, classicItem)
+	total = anotherCheckout.classTotal
+	if total != 1 {
+		t.Errorf("Number of classic ads added and removed was incorrect, got: %v, expected: 1", total)
+	}
+
+	// Try and remove multiple classic ads more than is present
+	anotherCheckout.Remove(classicItem, classicItem)
+	total = anotherCheckout.classTotal
+	if total != 0 {
+		t.Errorf("Total no of classic ads should stay zero when trying to remove more than present, got: %v, expected: 0", total)
 	}
 
 }
@@ -77,13 +106,11 @@ func TestTotal(t *testing.T) {
 	premiumItem := Item{id: premium}
 
 	// Default Test - 1 classic, 1 standout, 1 premium ad
-	defaultCheckout := Checkout{
+	checkout := Checkout{
 		pricingRules: CustomerPriceRules["default"],
 	}
-	defaultCheckout.Add(classicItem)
-	defaultCheckout.Add(standoutItem)
-	defaultCheckout.Add(premiumItem)
-	total := defaultCheckout.Total()
+	checkout.Add(classicItem, standoutItem, premiumItem)
+	total := checkout.Total()
 	if total != 987.97 {
 		t.Errorf("Default ad total was incorrect, got: %v, expected: 987.97", total)
 	}
@@ -91,10 +118,7 @@ func TestTotal(t *testing.T) {
 	unileverCheckout := Checkout{
 		pricingRules: CustomerPriceRules["unilever"],
 	}
-	unileverCheckout.Add(classicItem)
-	unileverCheckout.Add(classicItem)
-	unileverCheckout.Add(classicItem)
-	unileverCheckout.Add(premiumItem)
+	unileverCheckout.Add(classicItem, classicItem, classicItem, premiumItem)
 	total = unileverCheckout.Total()
 	if total != 934.97 {
 		t.Errorf("Unilever ad total was incorrect, got: %v, expected: 934.97", total)
@@ -104,10 +128,7 @@ func TestTotal(t *testing.T) {
 	appleCheckout := Checkout{
 		pricingRules: CustomerPriceRules["apple"],
 	}
-	appleCheckout.Add(standoutItem)
-	appleCheckout.Add(standoutItem)
-	appleCheckout.Add(standoutItem)
-	appleCheckout.Add(premiumItem)
+	appleCheckout.Add(standoutItem, standoutItem, standoutItem, premiumItem)
 	total = appleCheckout.Total()
 	if total != 1294.96 {
 		t.Errorf("Apple ad total was incorrect, got: %v, expected: 1294.96", total)
@@ -117,11 +138,7 @@ func TestTotal(t *testing.T) {
 	nikeCheckout := Checkout{
 		pricingRules: CustomerPriceRules["nike"],
 	}
-	nikeCheckout.Add(premiumItem)
-	nikeCheckout.Add(premiumItem)
-	nikeCheckout.Add(premiumItem)
-	nikeCheckout.Add(premiumItem)
-
+	nikeCheckout.Add(premiumItem, premiumItem, premiumItem, premiumItem)
 	total = nikeCheckout.Total()
 	if total != 1519.96 {
 		t.Errorf("Nike ad total was incorrect, got: %v, expected: 1519.96", total)
@@ -131,16 +148,9 @@ func TestTotal(t *testing.T) {
 	fordCheckout := Checkout{
 		pricingRules: CustomerPriceRules["ford"],
 	}
-	fordCheckout.Add(classicItem)
-	fordCheckout.Add(classicItem)
-	fordCheckout.Add(classicItem)
-	fordCheckout.Add(classicItem)
-	fordCheckout.Add(classicItem)
-	fordCheckout.Add(classicItem)
+	fordCheckout.Add(classicItem, classicItem, classicItem, classicItem, classicItem, classicItem)
 	fordCheckout.Add(standoutItem)
-	fordCheckout.Add(premiumItem)
-	fordCheckout.Add(premiumItem)
-	fordCheckout.Add(premiumItem)
+	fordCheckout.Add(premiumItem, premiumItem, premiumItem)
 
 	total = fordCheckout.Total()
 	if total != 2829.91 {

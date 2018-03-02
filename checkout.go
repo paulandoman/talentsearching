@@ -18,48 +18,52 @@ type Checkout struct {
 }
 
 // Add ads to the checkout
-func (check *Checkout) Add(i Item) {
-	switch i.id {
-	case classic:
-		fmt.Println(check.pricingRules, "classic added")
-		check.classTotal++
-	case standout:
-		fmt.Println("standout added")
-		check.standTotal++
-	case premium:
-		fmt.Println("premium added")
-		check.premTotal++
-	default:
-		fmt.Println("nothing added")
+func (check *Checkout) Add(args ...Item) {
+	for _, i := range args {
+		switch i.id {
+		case classic:
+			fmt.Println(check.pricingRules, "classic added")
+			check.classTotal++
+		case standout:
+			fmt.Println("standout added")
+			check.standTotal++
+		case premium:
+			fmt.Println("premium added")
+			check.premTotal++
+		default:
+			fmt.Println("nothing added")
+		}
 	}
 }
 
 // Remove ad from checkout
-func (check *Checkout) Remove(i Item) {
-	switch i.id {
-	case classic:
-		if check.classTotal > 0 {
-			check.classTotal--
-			fmt.Println("classic removed ")
-		} else {
-			fmt.Println("no classic ads to remove")
+func (check *Checkout) Remove(args ...Item) {
+	for _, i := range args {
+		switch i.id {
+		case classic:
+			if check.classTotal > 0 {
+				check.classTotal--
+				fmt.Println("classic removed ")
+			} else {
+				fmt.Println("no classic ads to remove")
+			}
+		case standout:
+			if check.standTotal > 0 {
+				check.standTotal--
+				fmt.Println("standout removed")
+			} else {
+				fmt.Println("no standout ads to remove")
+			}
+		case premium:
+			if check.premTotal > 0 {
+				check.premTotal--
+				fmt.Println("premium removed ")
+			} else {
+				fmt.Println("no premium ads to remove")
+			}
+		default:
+			fmt.Println("nothing removed")
 		}
-	case standout:
-		if check.standTotal > 0 {
-			check.standTotal--
-			fmt.Println("standout removed")
-		} else {
-			fmt.Println("no standout ads to remove")
-		}
-	case premium:
-		if check.premTotal > 0 {
-			check.premTotal--
-			fmt.Println("premium removed ")
-		} else {
-			fmt.Println("no premium ads to remove")
-		}
-	default:
-		fmt.Println("nothing removed")
 	}
 }
 
