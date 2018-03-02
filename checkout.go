@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"math"
 )
 
 func main() {
@@ -41,7 +42,7 @@ type PricingRules struct {
 type Pricing struct {
 	Price     float64
 	XforY     float64 // Where Y = X-1
-	BulkNo    int
+	BulkNo    float64
 	BulkPrice float64
 }
 
@@ -65,20 +66,32 @@ func (check *Checkout) Add(i Item) {
 // Total adds up the total cost of the ads based on the customer
 func (check *Checkout) Total() float64 {
 	classicDiscount := ApplyBulkDiscount(check.classTotal, check.pricingRules.classic.XforY)
-	classicAdCost := (check.classTotal - classicDiscount) * check.pricingRules.classic.Price
+	classicAdPrice := GetAdPrice(check.classTotal, check.pricingRules.classic)
+	classicAdTotal := (check.classTotal - classicDiscount) * classicAdPrice
 
 	standoutDiscount := ApplyBulkDiscount(check.standTotal, check.pricingRules.standout.XforY)
-	standoutAdCost := (check.standTotal - standoutDiscount) * check.pricingRules.standout.Price
+	standoutAdPrice := GetAdPrice(check.standTotal, check.pricingRules.standout)
+	standoutAdTotal := (check.standTotal - standoutDiscount) * standoutAdPrice
 
 	premiumDiscount := ApplyBulkDiscount(check.standTotal, check.pricingRules.premium.XforY)
-	premiumAdCost := (check.premTotal - premiumDiscount) * check.pricingRules.premium.Price
-	return Truncate(classicAdCost + standoutAdCost + premiumAdCost)
+	premiumAdPrice := GetAdPrice(check.premTotal, check.pricingRules.premium)
+	premiumAdTotal := (check.premTotal - premiumDiscount) * premiumAdPrice
+
+	return Truncate(classicAdTotal + standoutAdTotal + premiumAdTotal)
 }
 
 // ApplyBulkDiscount to an ad that has a X for the price of Y discount
 func ApplyBulkDiscount(noOfAds float64, xForY float64) float64 {
 	if xForY != 0 {
-		return noOfAds / xForY
+		return math.Trunc(noOfAds / xForY)
 	}
 	return xForY
+}
+
+// GetAdPrice - get the ad price taking into account any bulk discounts
+func GetAdPrice(noOfAds float64, pricing Pricing) float64 {
+	if (pricing.BulkNo != 0) && (noOfAds >= pricing.BulkNo) {
+		return pricing.BulkPrice
+	}
+	return pricing.Price
 }

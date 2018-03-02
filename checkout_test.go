@@ -52,7 +52,7 @@ func TestTotal(t *testing.T) {
 	if total != 987.97 {
 		t.Errorf("Default ad total was incorrect, got: %v, expected: 987.97", total)
 	}
-	// Unilever Test
+	// Unilever Test - 3 for 2 on classic ads
 	unileverCheckout := Checkout{
 		pricingRules: CustomerPriceRules["unilever"],
 	}
@@ -65,7 +65,7 @@ func TestTotal(t *testing.T) {
 		t.Errorf("Unilever ad total was incorrect, got: %v, expected: 934.97", total)
 	}
 
-	// Apple Test
+	// Apple Test - discount on standout ads
 	appleCheckout := Checkout{
 		pricingRules: CustomerPriceRules["apple"],
 	}
@@ -78,6 +78,38 @@ func TestTotal(t *testing.T) {
 		t.Errorf("Apple ad total was incorrect, got: %v, expected: 1294.96", total)
 	}
 
-	// Nike Test
+	// Nike Test - bulk discount on premium ads
+	nikeCheckout := Checkout{
+		pricingRules: CustomerPriceRules["nike"],
+	}
+	nikeCheckout.Add(premiumItem)
+	nikeCheckout.Add(premiumItem)
+	nikeCheckout.Add(premiumItem)
+	nikeCheckout.Add(premiumItem)
+
+	total = nikeCheckout.Total()
+	if total != 1519.96 {
+		t.Errorf("Nike ad total was incorrect, got: %v, expected: 1519.96", total)
+	}
+
+	// Ford Test - 5 for 4 on classic ads, discount on standout, bulk discounts on premium ads
+	fordCheckout := Checkout{
+		pricingRules: CustomerPriceRules["ford"],
+	}
+	fordCheckout.Add(classicItem)
+	fordCheckout.Add(classicItem)
+	fordCheckout.Add(classicItem)
+	fordCheckout.Add(classicItem)
+	fordCheckout.Add(classicItem)
+	fordCheckout.Add(classicItem)
+	fordCheckout.Add(standoutItem)
+	fordCheckout.Add(premiumItem)
+	fordCheckout.Add(premiumItem)
+	fordCheckout.Add(premiumItem)
+
+	total = fordCheckout.Total()
+	if total != 2829.91 {
+		t.Errorf("Ford ad total was incorrect, got: %v, expected: 2829.91", total)
+	}
 
 }
