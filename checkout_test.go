@@ -36,7 +36,7 @@ func TestAdd(t *testing.T) {
 
 }
 
-func TestCheckout(t *testing.T) {
+func TestTotal(t *testing.T) {
 	classicItem := Item{id: classic}
 	standoutItem := Item{id: standout}
 	premiumItem := Item{id: premium}
@@ -66,6 +66,17 @@ func TestCheckout(t *testing.T) {
 	}
 
 	// Apple Test
+	appleCheckout := Checkout{
+		pricingRules: CustomerPriceRules["apple"],
+	}
+	appleCheckout.Add(standoutItem)
+	appleCheckout.Add(standoutItem)
+	appleCheckout.Add(standoutItem)
+	appleCheckout.Add(premiumItem)
+	total = appleCheckout.Total()
+	if total != 1294.96 {
+		t.Errorf("Apple ad total was incorrect, got: %v, expected: 1294.96", total)
+	}
 
 	// Nike Test
 

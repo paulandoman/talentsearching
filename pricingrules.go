@@ -25,4 +25,15 @@ var CustomerPriceRules = map[string]PricingRules{
 			Price: 394.99,
 		},
 	},
+	"apple": PricingRules{
+		classic: Pricing{
+			Price: 269.99,
+		},
+		standout: Pricing{
+			Price: 299.99,
+		},
+		premium: Pricing{
+			Price: 394.99,
+		},
+	},
 }
