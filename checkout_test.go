@@ -10,19 +10,8 @@ func TestAdd(t *testing.T) {
 	premiumItem := Item{id: premium}
 
 	defaultCheckout := Checkout{
-		pricingRules: PricingRules{
-			classic: Pricing{
-				Price: 269.99,
-			},
-			standout: Pricing{
-				Price: 322.99,
-			},
-			premium: Pricing{
-				Price: 394.99,
-			},
-		},
+		pricingRules: CustomerPriceRules["default"],
 	}
-
 	defaultCheckout.Add(classicItem)
 	defaultCheckout.Add(classicItem)
 	defaultCheckout.Add(standoutItem)
@@ -54,17 +43,7 @@ func TestCheckout(t *testing.T) {
 
 	// Default Test
 	defaultCheckout := Checkout{
-		pricingRules: PricingRules{
-			classic: Pricing{
-				Price: 269.99,
-			},
-			standout: Pricing{
-				Price: 322.99,
-			},
-			premium: Pricing{
-				Price: 394.99,
-			},
-		},
+		pricingRules: CustomerPriceRules["default"],
 	}
 	defaultCheckout.Add(classicItem)
 	defaultCheckout.Add(standoutItem)
@@ -75,18 +54,7 @@ func TestCheckout(t *testing.T) {
 	}
 	// Unilever Test
 	unileverCheckout := Checkout{
-		pricingRules: PricingRules{
-			classic: Pricing{
-				Price: 269.99,
-				XforY: 3,
-			},
-			standout: Pricing{
-				Price: 322.99,
-			},
-			premium: Pricing{
-				Price: 394.99,
-			},
-		},
+		pricingRules: CustomerPriceRules["unilever"],
 	}
 	unileverCheckout.Add(classicItem)
 	unileverCheckout.Add(classicItem)
