@@ -9,6 +9,7 @@ func TestAdd(t *testing.T) {
 	standoutItem := Item{id: standout}
 	premiumItem := Item{id: premium}
 
+	// Add 2 classic, 3 standout and 1 premium ad
 	defaultCheckout := Checkout{
 		pricingRules: CustomerPriceRules["default"],
 	}
@@ -36,12 +37,46 @@ func TestAdd(t *testing.T) {
 
 }
 
+func TestRemove(t *testing.T) {
+	classicItem := Item{id: classic}
+
+	// Add 2 classic ads remove 1 classic ad
+	defaultCheckout := Checkout{
+		pricingRules: CustomerPriceRules["default"],
+	}
+	defaultCheckout.Add(classicItem)
+	defaultCheckout.Add(classicItem)
+	defaultCheckout.Remove(classicItem)
+
+	total := defaultCheckout.classTotal
+	if total != 1 {
+		t.Errorf("Number of classic ads added and removed was incorrect, got: %v, expected: 1", total)
+	}
+
+	// Added and subtracted the same number of classic ads
+	defaultCheckout.Remove(classicItem)
+
+	total = defaultCheckout.classTotal
+	if total != 0 {
+		t.Errorf("Number of classic ads added and removed was incorrect, got: %v, expected: 0", total)
+	}
+
+	// Try and remove a classic ad when there are none left to remove
+	defaultCheckout.Remove(classicItem)
+
+	total = defaultCheckout.classTotal
+	if total != 0 {
+		t.Errorf("When removing ad that doesn't exist from the checkout total ads of that type should stay zero, got: %v, expected: 0", total)
+	}
+
+}
+
 func TestTotal(t *testing.T) {
 	classicItem := Item{id: classic}
 	standoutItem := Item{id: standout}
 	premiumItem := Item{id: premium}
 
-	// Default Test
+	// Default Test - 1 classic, 1 standout, 1 premium ad
 	defaultCheckout := Checkout{
 		pricingRules: CustomerPriceRules["default"],
 	}

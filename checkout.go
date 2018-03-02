@@ -9,41 +9,12 @@ func main() {
 
 }
 
-// JobAd represent different types of job ads
-type JobAd int
-
-const (
-	classic JobAd = iota
-	standout
-	premium
-)
-
-// Item represents a job ad
-type Item struct {
-	id JobAd
-}
-
 // Checkout represents an individual checkout
 type Checkout struct {
 	pricingRules PricingRules
 	classTotal   float64
 	standTotal   float64
 	premTotal    float64
-}
-
-// PricingRules model for the different types of ad
-type PricingRules struct {
-	classic  Pricing
-	standout Pricing
-	premium  Pricing
-}
-
-// Pricing model for each particular ad
-type Pricing struct {
-	Price     float64
-	XforY     float64 // Where Y = X-1
-	BulkNo    float64
-	BulkPrice float64
 }
 
 // Add ads to the checkout
@@ -60,6 +31,35 @@ func (check *Checkout) Add(i Item) {
 		check.premTotal++
 	default:
 		fmt.Println("nothing added")
+	}
+}
+
+// Remove ad from checkout
+func (check *Checkout) Remove(i Item) {
+	switch i.id {
+	case classic:
+		if check.classTotal > 0 {
+			check.classTotal--
+			fmt.Println("classic removed ")
+		} else {
+			fmt.Println("no classic ads to remove")
+		}
+	case standout:
+		if check.standTotal > 0 {
+			check.standTotal--
+			fmt.Println("standout removed")
+		} else {
+			fmt.Println("no standout ads to remove")
+		}
+	case premium:
+		if check.premTotal > 0 {
+			check.premTotal--
+			fmt.Println("premium removed ")
+		} else {
+			fmt.Println("no premium ads to remove")
+		}
+	default:
+		fmt.Println("nothing removed")
 	}
 }
 

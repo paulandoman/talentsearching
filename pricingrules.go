@@ -73,3 +73,18 @@ var CustomerPriceRules = map[string]PricingRules{
 		},
 	},
 }
+
+// PricingRules model for the different types of ad
+type PricingRules struct {
+	classic  Pricing
+	standout Pricing
+	premium  Pricing
+}
+
+// Pricing model for each particular ad
+type Pricing struct {
+	Price     float64
+	XforY     float64 // Where Y = X-1
+	BulkNo    float64
+	BulkPrice float64
+}
