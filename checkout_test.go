@@ -12,22 +12,13 @@ func TestAdd(t *testing.T) {
 	defaultCheckout := Checkout{
 		pricingRules: PricingRules{
 			classic: Pricing{
-				Price:     269.99,
-				XforY:     0,
-				BulkNo:    1,
-				BulkPrice: 269.99,
+				Price: 269.99,
 			},
 			standout: Pricing{
-				Price:     322.99,
-				XforY:     0,
-				BulkNo:    1,
-				BulkPrice: 322.99,
+				Price: 322.99,
 			},
 			premium: Pricing{
-				Price:     394.99,
-				XforY:     0,
-				BulkNo:    1,
-				BulkPrice: 394.99,
+				Price: 394.99,
 			},
 		},
 	}
@@ -65,22 +56,13 @@ func TestCheckout(t *testing.T) {
 	defaultCheckout := Checkout{
 		pricingRules: PricingRules{
 			classic: Pricing{
-				Price:     269.99,
-				XforY:     0,
-				BulkNo:    1,
-				BulkPrice: 269.99,
+				Price: 269.99,
 			},
 			standout: Pricing{
-				Price:     322.99,
-				XforY:     0,
-				BulkNo:    1,
-				BulkPrice: 322.99,
+				Price: 322.99,
 			},
 			premium: Pricing{
-				Price:     394.99,
-				XforY:     0,
-				BulkNo:    1,
-				BulkPrice: 394.99,
+				Price: 394.99,
 			},
 		},
 	}
@@ -95,22 +77,14 @@ func TestCheckout(t *testing.T) {
 	unileverCheckout := Checkout{
 		pricingRules: PricingRules{
 			classic: Pricing{
-				Price:     269.99,
-				XforY:     3,
-				BulkNo:    1,
-				BulkPrice: 269.99,
+				Price: 269.99,
+				XforY: 3,
 			},
 			standout: Pricing{
-				Price:     322.99,
-				XforY:     0,
-				BulkNo:    1,
-				BulkPrice: 322.99,
+				Price: 322.99,
 			},
 			premium: Pricing{
-				Price:     394.99,
-				XforY:     0,
-				BulkNo:    1,
-				BulkPrice: 394.99,
+				Price: 394.99,
 			},
 		},
 	}
