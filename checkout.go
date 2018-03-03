@@ -5,10 +5,6 @@ import (
 	"math"
 )
 
-func main() {
-
-}
-
 // Checkout represents an individual checkout
 type Checkout struct {
 	pricingRules PricingRules
