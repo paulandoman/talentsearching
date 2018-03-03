@@ -51,8 +51,8 @@ func (checkout *Checkout) removeHandler(w http.ResponseWriter, r *http.Request) 
 func (checkout *Checkout) totalHandler(w http.ResponseWriter, r *http.Request) {
 	query := r.URL.Query()
 	if validateQuery(query, "customer") {
-		checkout.Total()
-		fmt.Fprintf(w, "total cost for customer '%v'", query["customer"][0])
+		price := checkout.Total()
+		fmt.Fprintf(w, "total cost for customer '%v' = $%v", query["customer"][0], price)
 	} else {
 		w.WriteHeader(400)
 		fmt.Fprintln(w, "malformed query")
