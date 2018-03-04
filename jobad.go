@@ -1,15 +1,15 @@
 package main
 
-// JobAd represents different types of job ads
-type JobAd int
+// AdType represents different types of job ads
+type AdType int
 
 const (
-	classic JobAd = iota
+	classic AdType = iota
 	standout
 	premium
 )
 
 // Item represents a job ad
 type Item struct {
-	id JobAd
+	adType AdType
 }

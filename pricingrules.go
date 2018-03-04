@@ -88,3 +88,12 @@ type Pricing struct {
 	BulkNo    float64
 	BulkPrice float64
 }
+
+// GetRules returns pricing rules based on customer
+func GetRules(customer string) PricingRules {
+	values, queryPresent := CustomerPriceRules[customer]
+	if queryPresent {
+		return values
+	}
+	return CustomerPriceRules["default"]
+}
