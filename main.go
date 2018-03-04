@@ -1,16 +1,16 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"net/url"
-	"os"
 )
 
 func main() {
-	logger := log.New(os.Stdout, "http: ", log.LstdFlags)
-	logger.Println("Server is starting...")
+	log.Println("Server is starting...")
 
 	checkout := Checkout{
 		pricingRules: GetRules("default"),
@@ -27,18 +27,28 @@ func main() {
 func (checkout *Checkout) addHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "POST" {
 		w.WriteHeader(405)
-		fmt.Fprintln(w, "Invalid request method")
+		log.Println(r.Method, "Invalid request method")
 	} else {
-		query := r.URL.Query()
-		if validateQuery(query, "customer", "type") {
+		body, err := ioutil.ReadAll(r.Body)
+		if err != nil {
+			http.Error(w, "Error reading request body",
+				http.StatusInternalServerError)
+		}
+
+		var jsonBodyItem struct {
+			ItemType string
+		}
+		error := json.Unmarshal(body, &jsonBodyItem)
+
+		if error != nil || !validItemText(jsonBodyItem.ItemType) {
+			w.WriteHeader(405)
+			log.Println("There was an error with the json input:", err)
+		} else {
 			item := Item{
-				StringToAdTypes(query["type"][0]),
+				StringToAdTypes(jsonBodyItem.ItemType),
 			}
 			checkout.Add(item)
 			fmt.Fprintf(w, checkout.Show())
-		} else {
-			w.WriteHeader(400)
-			fmt.Fprintln(w, "Malformed query")
 		}
 	}
 }
@@ -47,7 +57,7 @@ func (checkout *Checkout) addHandler(w http.ResponseWriter, r *http.Request) {
 func (checkout *Checkout) deleteHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "DELETE" {
 		w.WriteHeader(405)
-		fmt.Fprintln(w, "Invalid request method")
+		log.Println(r.Method, "Invalid request method")
 	} else {
 		query := r.URL.Query()
 		if validateQuery(query, "customer", "type") {
@@ -58,7 +68,7 @@ func (checkout *Checkout) deleteHandler(w http.ResponseWriter, r *http.Request) 
 			fmt.Fprintf(w, checkout.Show())
 		} else {
 			w.WriteHeader(400)
-			fmt.Fprintln(w, "Malformed query")
+			log.Println(query, "Malformed query")
 		}
 	}
 }
@@ -67,14 +77,14 @@ func (checkout *Checkout) deleteHandler(w http.ResponseWriter, r *http.Request) 
 func (checkout *Checkout) totalHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "GET" {
 		w.WriteHeader(405)
-		fmt.Fprintln(w, "Invalid request method")
+		log.Println(r.Method, "Invalid request method")
 	} else {
 		query := r.URL.Query()
 		if validateQuery(query, "customer") {
 			fmt.Fprintf(w, checkout.ShowTotal())
 		} else {
 			w.WriteHeader(400)
-			fmt.Fprintln(w, "Malformed query")
+			log.Println(w, "Malformed query")
 		}
 	}
 }
@@ -88,4 +98,14 @@ func validateQuery(v url.Values, args ...string) bool {
 		}
 	}
 	return true
+}
+
+// validItemText checks that the item added is one of the known job types
+func validItemText(item string) bool {
+	for _, value := range AdTypesStrings {
+		if value == item {
+			return true
+		}
+	}
+	return false
 }

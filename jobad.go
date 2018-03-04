@@ -9,6 +9,13 @@ const (
 	premium
 )
 
+// AdTypesStrings array of strings representing ad types
+var AdTypesStrings = [3]string{
+	"classic",
+	"standout",
+	"premium",
+}
+
 // Item represents a job ad
 type Item struct {
 	adType AdTypes

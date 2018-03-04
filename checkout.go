@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 	"math"
 )
 
@@ -19,16 +20,16 @@ func (check *Checkout) Add(args ...Item) {
 	for _, i := range args {
 		switch i.adType {
 		case classic:
-			fmt.Println(check.pricingRules, "classic added")
+			log.Println(check.pricingRules, "classic added")
 			check.classTotal++
 		case standout:
-			fmt.Println("standout added")
+			log.Println(check.pricingRules, "standout added")
 			check.standTotal++
 		case premium:
-			fmt.Println("premium added")
+			log.Println(check.pricingRules, "premium added")
 			check.premTotal++
 		default:
-			fmt.Println("nothing added")
+			log.Println(check.pricingRules, "nothing added")
 		}
 	}
 }
@@ -40,26 +41,26 @@ func (check *Checkout) Delete(args ...Item) {
 		case classic:
 			if check.classTotal > 0 {
 				check.classTotal--
-				fmt.Println("classic deleted ")
+				log.Println(check.pricingRules, "classic deleted ")
 			} else {
-				fmt.Println("no classic ads to delete")
+				log.Println(check.pricingRules, "no classic ads to delete")
 			}
 		case standout:
 			if check.standTotal > 0 {
 				check.standTotal--
-				fmt.Println("standout deleted")
+				log.Println(check.pricingRules, "standout deleted")
 			} else {
-				fmt.Println("no standout ads to delete")
+				log.Println(check.pricingRules, "no standout ads to delete")
 			}
 		case premium:
 			if check.premTotal > 0 {
 				check.premTotal--
-				fmt.Println("premium deleted ")
+				log.Println(check.pricingRules, "premium deleted ")
 			} else {
-				fmt.Println("no premium ads to delete")
+				log.Println(check.pricingRules, "no premium ads to delete")
 			}
 		default:
-			fmt.Println("nothing deleted")
+			log.Println(check.pricingRules, "nothing deleted")
 		}
 	}
 }
