@@ -185,3 +185,30 @@ func TestFordTotal(t *testing.T) {
 		t.Errorf("Ford ad total was incorrect, got: %v, expected: 2829.91", total)
 	}
 }
+
+func TestTruncateBoundaryLow(t *testing.T) {
+	val := 197.9001
+	expected := 197.90
+	truncVal := Truncate(val)
+	if truncVal != expected {
+		t.Errorf("Truncated value unsuccessfully, got: %v, expected: %v", truncVal, expected)
+	}
+}
+
+func TestTruncateBoundaryMid(t *testing.T) {
+	val := 23.255
+	expected := 23.25
+	truncVal := Truncate(val)
+	if truncVal != expected {
+		t.Errorf("Truncated value unsuccessfully, got: %v, expected: %v", truncVal, expected)
+	}
+}
+
+func TestTruncateBoundaryHigh(t *testing.T) {
+	val := 10.0099
+	expected := 10.00
+	truncVal := Truncate(val)
+	if truncVal != expected {
+		t.Errorf("Truncated value unsuccessfully, got: %v, expected: %v", truncVal, expected)
+	}
+}

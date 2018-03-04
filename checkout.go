@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"math"
 )
@@ -16,7 +17,7 @@ type Checkout struct {
 // Add ads to the checkout
 func (check *Checkout) Add(args ...Item) {
 	for _, i := range args {
-		switch i.id {
+		switch i.adType {
 		case classic:
 			fmt.Println(check.pricingRules, "classic added")
 			check.classTotal++
@@ -35,7 +36,7 @@ func (check *Checkout) Add(args ...Item) {
 // Remove ad from checkout
 func (check *Checkout) Remove(args ...Item) {
 	for _, i := range args {
-		switch i.id {
+		switch i.adType {
 		case classic:
 			if check.classTotal > 0 {
 				check.classTotal--
@@ -80,6 +81,44 @@ func (check *Checkout) Total() float64 {
 	return Truncate(classicAdTotal + standoutAdTotal + premiumAdTotal)
 }
 
+// Show the checkout totals in JSON format
+func (check *Checkout) Show() string {
+	type Display struct {
+		Classic  float64
+		Standout float64
+		Premium  float64
+	}
+
+	display := &Display{
+		Classic:  check.classTotal,
+		Standout: check.standTotal,
+		Premium:  check.premTotal,
+	}
+	b, err := json.Marshal(display)
+	if err != nil {
+		fmt.Println(err)
+		return ""
+	}
+	return string(b)
+}
+
+// ShowTotal displays the checkout total in JSON format
+func (check *Checkout) ShowTotal() string {
+	type Display struct {
+		TotalCost float64
+	}
+
+	display := &Display{
+		TotalCost: check.Total(),
+	}
+	b, err := json.Marshal(display)
+	if err != nil {
+		fmt.Println(err)
+		return ""
+	}
+	return string(b)
+}
+
 // ApplyBulkDiscount to an ad that has a X for the price of Y discount
 func ApplyBulkDiscount(noOfAds float64, xForY float64) float64 {
 	if xForY != 0 {
@@ -94,4 +133,9 @@ func GetAdPrice(noOfAds float64, pricing Pricing) float64 {
 		return pricing.BulkPrice
 	}
 	return pricing.Price
+}
+
+// Truncate a float to two levels of precision
+func Truncate(some float64) float64 {
+	return float64(int(some*100)) / 100
 }
