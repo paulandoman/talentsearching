@@ -11,7 +11,7 @@ var premiumItem = Item{adType: premium}
 func TestAddAdsOneAtATime(t *testing.T) {
 	// Add 2 classic, 3 standout and 1 premium ad
 	checkout := Checkout{
-		pricingRules: CustomerPriceRules["default"],
+		pricingRules: GetRules("default"),
 	}
 	checkout.Add(classicItem)
 	checkout.Add(classicItem)
@@ -39,7 +39,7 @@ func TestAddAdsOneAtATime(t *testing.T) {
 func TestAddingMultipleAds(t *testing.T) {
 	// Adding multiple ads at once
 	checkout := Checkout{
-		pricingRules: CustomerPriceRules["unilever"],
+		pricingRules: GetRules("unilever"),
 	}
 	checkout.Add(classicItem, classicItem, premiumItem, standoutItem)
 
@@ -52,7 +52,7 @@ func TestAddingMultipleAds(t *testing.T) {
 func TestAddAndRemoveAdsOneAtATime(t *testing.T) {
 	// Add 2 classic ads remove 1 classic ad
 	checkout := Checkout{
-		pricingRules: CustomerPriceRules["default"],
+		pricingRules: GetRules("default"),
 	}
 	checkout.Add(classicItem)
 	checkout.Add(classicItem)
@@ -67,7 +67,7 @@ func TestAddAndRemoveAdsOneAtATime(t *testing.T) {
 func TestAddAndRemoveSameAmountOfAds(t *testing.T) {
 	// Adding and subtracting the same number of standout ads
 	checkout := Checkout{
-		pricingRules: CustomerPriceRules["default"],
+		pricingRules: GetRules("default"),
 	}
 	checkout.Add(standoutItem)
 	checkout.Remove(standoutItem)
@@ -81,7 +81,7 @@ func TestAddAndRemoveSameAmountOfAds(t *testing.T) {
 func TestTryRemoveAdWhenTotalIsZero(t *testing.T) {
 	// Try and remove an ad when there are none left to remove
 	checkout := Checkout{
-		pricingRules: CustomerPriceRules["default"],
+		pricingRules: GetRules("default"),
 	}
 	checkout.Remove(premiumItem)
 
@@ -94,7 +94,7 @@ func TestTryRemoveAdWhenTotalIsZero(t *testing.T) {
 func TestAddingAndRemovingMultipleAds(t *testing.T) {
 	// Add multiple classic ads and then remove multiple classic ads
 	checkout := Checkout{
-		pricingRules: CustomerPriceRules["default"],
+		pricingRules: GetRules("default"),
 	}
 	checkout.Add(classicItem, classicItem, classicItem)
 	checkout.Remove(classicItem, classicItem)
@@ -108,7 +108,7 @@ func TestAddingAndRemovingMultipleAds(t *testing.T) {
 func TestTryRemovingMultipleAdsMoreThanPresent(t *testing.T) {
 	// Try and remove multiple classic ads more than is present
 	checkout := Checkout{
-		pricingRules: CustomerPriceRules["default"],
+		pricingRules: GetRules("default"),
 		classTotal:   1.0,
 	}
 	checkout.Remove(classicItem, classicItem)
@@ -122,7 +122,7 @@ func TestTryRemovingMultipleAdsMoreThanPresent(t *testing.T) {
 func TestTotal(t *testing.T) {
 	// Default Test - 1 classic, 1 standout, 1 premium ad
 	checkout := Checkout{
-		pricingRules: CustomerPriceRules["default"],
+		pricingRules: GetRules("default"),
 	}
 	checkout.Add(classicItem, standoutItem, premiumItem)
 
@@ -135,7 +135,7 @@ func TestTotal(t *testing.T) {
 func TestUnileverTotal(t *testing.T) {
 	// Unilever Test - 3 for 2 on classic ads
 	checkout := Checkout{
-		pricingRules: CustomerPriceRules["unilever"],
+		pricingRules: GetRules("unilever"),
 	}
 	checkout.Add(classicItem, classicItem, classicItem, premiumItem)
 
@@ -148,7 +148,7 @@ func TestUnileverTotal(t *testing.T) {
 func TestAppleTotal(t *testing.T) {
 	// Apple Test - discount on standout ads
 	checkout := Checkout{
-		pricingRules: CustomerPriceRules["apple"],
+		pricingRules: GetRules("apple"),
 	}
 	checkout.Add(standoutItem, standoutItem, standoutItem, premiumItem)
 
@@ -161,7 +161,7 @@ func TestAppleTotal(t *testing.T) {
 func TestNikeTotal(t *testing.T) {
 	// Nike Test - bulk discount on premium ads
 	checkout := Checkout{
-		pricingRules: CustomerPriceRules["nike"],
+		pricingRules: GetRules("nike"),
 	}
 	checkout.Add(premiumItem, premiumItem, premiumItem, premiumItem)
 
@@ -174,7 +174,7 @@ func TestNikeTotal(t *testing.T) {
 func TestFordTotal(t *testing.T) {
 	// Ford Test - 5 for 4 on classic ads, discount on standout, bulk discounts on premium ads
 	checkout := Checkout{
-		pricingRules: CustomerPriceRules["ford"],
+		pricingRules: GetRules("ford"),
 	}
 	checkout.Add(classicItem, classicItem, classicItem, classicItem, classicItem, classicItem)
 	checkout.Add(standoutItem)
