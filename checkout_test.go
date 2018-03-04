@@ -49,41 +49,41 @@ func TestAddingMultipleAds(t *testing.T) {
 	}
 }
 
-func TestAddAndRemoveAdsOneAtATime(t *testing.T) {
-	// Add 2 classic ads remove 1 classic ad
+func TestAddAndDeleteAdsOneAtATime(t *testing.T) {
+	// Add 2 classic ads delete 1 classic ad
 	checkout := Checkout{
 		pricingRules: GetRules("default"),
 	}
 	checkout.Add(classicItem)
 	checkout.Add(classicItem)
-	checkout.Remove(classicItem)
+	checkout.Delete(classicItem)
 
 	total := checkout.classTotal
 	if total != 1 {
-		t.Errorf("Number of classic ads added and removed was incorrect, got: %v, expected: 1", total)
+		t.Errorf("Number of classic ads added and deleted was incorrect, got: %v, expected: 1", total)
 	}
 }
 
-func TestAddAndRemoveSameAmountOfAds(t *testing.T) {
+func TestAddAndDeleteSameAmountOfAds(t *testing.T) {
 	// Adding and subtracting the same number of standout ads
 	checkout := Checkout{
 		pricingRules: GetRules("default"),
 	}
 	checkout.Add(standoutItem)
-	checkout.Remove(standoutItem)
+	checkout.Delete(standoutItem)
 
 	total := checkout.standTotal
 	if total != 0 {
-		t.Errorf("Number of standout ads added and removed was incorrect, got: %v, expected: 0", total)
+		t.Errorf("Number of standout ads added and deleted was incorrect, got: %v, expected: 0", total)
 	}
 }
 
-func TestTryRemoveAdWhenTotalIsZero(t *testing.T) {
-	// Try and remove an ad when there are none left to remove
+func TestTryDeleteAdWhenTotalIsZero(t *testing.T) {
+	// Try and delete an ad when there are none left to delete
 	checkout := Checkout{
 		pricingRules: GetRules("default"),
 	}
-	checkout.Remove(premiumItem)
+	checkout.Delete(premiumItem)
 
 	total := checkout.classTotal
 	if total != 0 {
@@ -92,30 +92,30 @@ func TestTryRemoveAdWhenTotalIsZero(t *testing.T) {
 }
 
 func TestAddingAndRemovingMultipleAds(t *testing.T) {
-	// Add multiple classic ads and then remove multiple classic ads
+	// Add multiple classic ads and then delete multiple classic ads
 	checkout := Checkout{
 		pricingRules: GetRules("default"),
 	}
 	checkout.Add(classicItem, classicItem, classicItem)
-	checkout.Remove(classicItem, classicItem)
+	checkout.Delete(classicItem, classicItem)
 
 	total := checkout.classTotal
 	if total != 1 {
-		t.Errorf("Number of classic ads added and removed was incorrect, got: %v, expected: 1", total)
+		t.Errorf("Number of classic ads added and deleted was incorrect, got: %v, expected: 1", total)
 	}
 }
 
 func TestTryRemovingMultipleAdsMoreThanPresent(t *testing.T) {
-	// Try and remove multiple classic ads more than is present
+	// Try and delete multiple classic ads more than is present
 	checkout := Checkout{
 		pricingRules: GetRules("default"),
 		classTotal:   1.0,
 	}
-	checkout.Remove(classicItem, classicItem)
+	checkout.Delete(classicItem, classicItem)
 
 	total := checkout.classTotal
 	if total != 0 {
-		t.Errorf("Total no of classic ads should stay zero when trying to remove more than present, got: %v, expected: 0", total)
+		t.Errorf("Total no of classic ads should stay zero when trying to delete more than present, got: %v, expected: 0", total)
 	}
 }
 

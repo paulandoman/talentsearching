@@ -33,33 +33,33 @@ func (check *Checkout) Add(args ...Item) {
 	}
 }
 
-// Remove ad from checkout
-func (check *Checkout) Remove(args ...Item) {
+// Delete ad from checkout
+func (check *Checkout) Delete(args ...Item) {
 	for _, i := range args {
 		switch i.adType {
 		case classic:
 			if check.classTotal > 0 {
 				check.classTotal--
-				fmt.Println("classic removed ")
+				fmt.Println("classic deleted ")
 			} else {
-				fmt.Println("no classic ads to remove")
+				fmt.Println("no classic ads to delete")
 			}
 		case standout:
 			if check.standTotal > 0 {
 				check.standTotal--
-				fmt.Println("standout removed")
+				fmt.Println("standout deleted")
 			} else {
-				fmt.Println("no standout ads to remove")
+				fmt.Println("no standout ads to delete")
 			}
 		case premium:
 			if check.premTotal > 0 {
 				check.premTotal--
-				fmt.Println("premium removed ")
+				fmt.Println("premium deleted ")
 			} else {
-				fmt.Println("no premium ads to remove")
+				fmt.Println("no premium ads to delete")
 			}
 		default:
-			fmt.Println("nothing removed")
+			fmt.Println("nothing deleted")
 		}
 	}
 }

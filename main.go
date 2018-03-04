@@ -17,7 +17,7 @@ func main() {
 	}
 
 	http.HandleFunc("/add", checkout.addHandler)
-	http.HandleFunc("/remove", checkout.removeHandler)
+	http.HandleFunc("/delete", checkout.deleteHandler)
 	http.HandleFunc("/total", checkout.totalHandler)
 
 	http.ListenAndServe(":8080", nil)
@@ -25,42 +25,57 @@ func main() {
 
 // addHandler handles request for adding ad
 func (checkout *Checkout) addHandler(w http.ResponseWriter, r *http.Request) {
-	query := r.URL.Query()
-	if validateQuery(query, "customer", "type") {
-		item := Item{
-			StringToAdTypes(query["type"][0]),
-		}
-		checkout.Add(item)
-		fmt.Fprintf(w, checkout.Show())
+	if r.Method != "POST" {
+		w.WriteHeader(405)
+		fmt.Fprintln(w, "Invalid request method")
 	} else {
-		w.WriteHeader(400)
-		fmt.Fprintln(w, "malformed query")
+		query := r.URL.Query()
+		if validateQuery(query, "customer", "type") {
+			item := Item{
+				StringToAdTypes(query["type"][0]),
+			}
+			checkout.Add(item)
+			fmt.Fprintf(w, checkout.Show())
+		} else {
+			w.WriteHeader(400)
+			fmt.Fprintln(w, "Malformed query")
+		}
 	}
 }
 
-// removeHandler handles request for removing ad
-func (checkout *Checkout) removeHandler(w http.ResponseWriter, r *http.Request) {
-	query := r.URL.Query()
-	if validateQuery(query, "customer", "type") {
-		item := Item{
-			StringToAdTypes(query["type"][0]),
-		}
-		checkout.Remove(item)
-		fmt.Fprintf(w, checkout.Show())
+// deleteHandler handles request for removing ad
+func (checkout *Checkout) deleteHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "DELETE" {
+		w.WriteHeader(405)
+		fmt.Fprintln(w, "Invalid request method")
 	} else {
-		w.WriteHeader(400)
-		fmt.Fprintln(w, "malformed query")
+		query := r.URL.Query()
+		if validateQuery(query, "customer", "type") {
+			item := Item{
+				StringToAdTypes(query["type"][0]),
+			}
+			checkout.Delete(item)
+			fmt.Fprintf(w, checkout.Show())
+		} else {
+			w.WriteHeader(400)
+			fmt.Fprintln(w, "Malformed query")
+		}
 	}
 }
 
 // totalHandler handles request for total price
 func (checkout *Checkout) totalHandler(w http.ResponseWriter, r *http.Request) {
-	query := r.URL.Query()
-	if validateQuery(query, "customer") {
-		fmt.Fprintf(w, checkout.ShowTotal())
+	if r.Method != "GET" {
+		w.WriteHeader(405)
+		fmt.Fprintln(w, "Invalid request method")
 	} else {
-		w.WriteHeader(400)
-		fmt.Fprintln(w, "malformed query")
+		query := r.URL.Query()
+		if validateQuery(query, "customer") {
+			fmt.Fprintf(w, checkout.ShowTotal())
+		} else {
+			w.WriteHeader(400)
+			fmt.Fprintln(w, "Malformed query")
+		}
 	}
 }
 
