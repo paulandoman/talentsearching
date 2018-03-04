@@ -1,4 +1,4 @@
-# TalenSearching
+# TalentSearching
 Talent Search Coding Test
 
 ## Testing
