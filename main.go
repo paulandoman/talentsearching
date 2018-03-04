@@ -13,7 +13,7 @@ func main() {
 	logger.Println("Server is starting...")
 
 	checkout := Checkout{
-		pricingRules: CustomerPriceRules["default"],
+		pricingRules: GetRules("default"),
 	}
 
 	http.HandleFunc("/add", checkout.addHandler)
@@ -27,8 +27,11 @@ func main() {
 func (checkout *Checkout) addHandler(w http.ResponseWriter, r *http.Request) {
 	query := r.URL.Query()
 	if validateQuery(query, "customer", "type") {
-		checkout.Add(Item{classic})
-		fmt.Fprintf(w, "customer '%v' has added '%v' ad", query["customer"][0], query["type"][0])
+		item := Item{
+			StringToAdTypes(query["type"][0]),
+		}
+		checkout.Add(item)
+		fmt.Fprintf(w, checkout.Show())
 	} else {
 		w.WriteHeader(400)
 		fmt.Fprintln(w, "malformed query")
@@ -39,8 +42,11 @@ func (checkout *Checkout) addHandler(w http.ResponseWriter, r *http.Request) {
 func (checkout *Checkout) removeHandler(w http.ResponseWriter, r *http.Request) {
 	query := r.URL.Query()
 	if validateQuery(query, "customer", "type") {
-		checkout.Remove(Item{classic})
-		fmt.Fprintf(w, "customer '%v' has removed '%v' ad", query["customer"][0], query["type"][0])
+		item := Item{
+			StringToAdTypes(query["type"][0]),
+		}
+		checkout.Remove(item)
+		fmt.Fprintf(w, checkout.Show())
 	} else {
 		w.WriteHeader(400)
 		fmt.Fprintln(w, "malformed query")
@@ -51,8 +57,7 @@ func (checkout *Checkout) removeHandler(w http.ResponseWriter, r *http.Request) 
 func (checkout *Checkout) totalHandler(w http.ResponseWriter, r *http.Request) {
 	query := r.URL.Query()
 	if validateQuery(query, "customer") {
-		price := checkout.Total()
-		fmt.Fprintf(w, "total cost for customer '%v' = $%v", query["customer"][0], price)
+		fmt.Fprintf(w, checkout.ShowTotal())
 	} else {
 		w.WriteHeader(400)
 		fmt.Fprintln(w, "malformed query")
