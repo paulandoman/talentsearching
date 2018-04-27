@@ -85,7 +85,7 @@ func DeleteJobAdCommandLineOptions(reader *bufio.Reader, checkout *Checkout) {
 	fmt.Println(checkout.Show())
 }
 
-// readAndTrim
+// readAndTrim - trims the string
 func readAndTrim(reader *bufio.Reader) string {
 	readString, _ := reader.ReadString('\n')
 	return strings.TrimSuffix(readString, "\n")
